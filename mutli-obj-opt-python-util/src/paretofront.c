@@ -24,11 +24,12 @@ void paretofront(bool *frontFlag, double *obj, size_t nPoints, size_t nObjs) {
         nPosDiff = 0;
         nNegDiff = 0;
         for (size_t j = 0; j < nObjs; j++) {
-			delta = obj[p * nObjs + j] - obj[q * nObjs + j];
-          if (delta < 0) nPosDiff = nPosDiff + 1;
-          else if (delta > 0) nNegDiff = nNegDiff + 1;
-		  // speed up step
-		  if (nNegDiff > 0 && nPosDiff > 0) break; // incomparable
+			    delta = obj[p * nObjs + j] - obj[q * nObjs + j];
+			    if (delta > 0) nNegDiff = nNegDiff + 1;
+          else //if (delta < 0)commenting this to filter out identical items similar to cao's method
+            nPosDiff = nPosDiff + 1;
+		      // speed up step
+		      if (nNegDiff > 0 && nPosDiff > 0) break; // incomparable
         }
         if (nNegDiff > 0 && nPosDiff > 0) continue; // incomparable
         else if (nNegDiff > 0) { // p is dominated
