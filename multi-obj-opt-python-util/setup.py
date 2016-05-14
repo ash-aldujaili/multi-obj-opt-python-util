@@ -24,8 +24,9 @@ print "Cleaning files"
 system("rm -vf *.so *.o *~")
 
 print "Compiling libs"
-system("gcc" + LDFLAGS + " src/paretofront.c src/paretofront_cao.c -o python_mo_util/libparetofront.so")
-system("gcc" + LDFLAGS + " src/incremental_epsilonindicator.c src/fast_eps_ind.c src/epsilonindicator.c -o python_mo_util/libepsilonindicator.so")
+system("gcc" + LDFLAGS + " src/pf.c -o python_mo_util/libpf.so")
+system("gcc" + LDFLAGS + " src/eps.c -o python_mo_util/libeps.so")
+system("gcc" + LDFLAGS + " src/hypervol.c -o python_mo_util/libhv.so")
 
 print "Testing .."
 os.chdir("./python_mo_util/")

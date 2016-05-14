@@ -6,27 +6,21 @@ Abdullah Al-Dujaili, 2016
 """
 
 import numpy as np
-import paretofront 
-import epsilonindicator
+import pymoutils
 import time
-from paretofront import paretofront
-from paretofront import paretofront_cao
-from epsilonindicator import compute_eps
-from epsilonindicator import compute_incr_eps
-from epsilonindicator import compute_fast_incr_eps
-
+from pymoutils import *
 
 
 # create an input array
-nrows = 100
-ncols = 10
+nrows = 10
+ncols = 5
 inArray = np.random.random((nrows,ncols))
 refSet = np.random.random((nrows,ncols))
 # Arrays
-print "Input Array:"
-print inArray
-print "Reference Array"
-print refSet
+#print "Input Array:"
+#print inArray
+#print "Reference Array"
+#print refSet
 
 # Pareto filtering
 print "Non-dominated vectors in the input array"
@@ -41,8 +35,11 @@ if np.all(pf_array_cao == pf_array):
 	print "test passed"
 else:
 	print "test failed"
-	
-print "A speed up of ", time_pf_cao / time_pf, "for paretofront over paretofront_cao" 
+
+if time_pf == 0.0:
+	print "A speed up of ", time_pf_cao / 1e-8, "for paretofront over paretofront_cao" 
+else:	
+	print "A speed up of ", time_pf_cao / time_pf, "for paretofront over paretofront_cao" 
 
 # Epsilon Indicator
 print "Additive Epsilon indicator value:"
@@ -59,5 +56,27 @@ print compute_incr_eps(inArray, refSet)
 time_incr_eps = time.time() - start_time
 print "It took:", time_incr_eps, "seconds to compute incremental eps."
 
-print "A speed up of ", time_incr_eps / time_incr_feps 
+if time_incr_feps == 0.0:
+	print "A speed up of ", time_incr_eps / 1e-8
+else:
+	print "A speed up of ", time_incr_eps / time_incr_feps
 
+
+# Hypervolume
+print "Hypervolume value on python hv code:"
+start_time = time.time()
+pyhv = compute_pyhv(inArray,[2]* ncols)
+time_hvpy = time.time() - start_time
+print pyhv
+
+print "Hypervolume value on c hv code:"
+start_time = time.time()
+chv = compute_incr_hv_c(inArray,[2]* ncols)
+time_hvc = time.time() - start_time
+print chv
+
+print "Incremental Hypervolume value on python hv code:"
+start_time = time.time()
+phv = compute_incr_hv(inArray,[2]* ncols)
+time_hvp = time.time() - start_time
+print phv
