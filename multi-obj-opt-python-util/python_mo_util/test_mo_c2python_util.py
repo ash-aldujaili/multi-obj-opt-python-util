@@ -15,12 +15,12 @@ from pymoutils import *
 nrows = 10
 ncols = 5
 inArray = np.random.random((nrows,ncols))
-refSet = np.random.random((nrows,ncols))
+refSet = np.random.random((nrows,ncols))-1
 # Arrays
-#print "Input Array:"
-#print inArray
-#print "Reference Array"
-#print refSet
+#rint "Input Array:"
+print inArray
+print "Reference Array"
+print refSet
 
 # Pareto filtering
 print "Non-dominated vectors in the input array"
@@ -80,3 +80,24 @@ start_time = time.time()
 phv = compute_incr_hv(inArray,[2]* ncols)
 time_hvp = time.time() - start_time
 print phv
+
+# Testing the GD calls
+print "GD value:"
+start_time = time.time()
+print compute_gd(inArray, refSet)
+print "It took:", time.time()- start_time, "seconds to compute gd."
+
+print "Incremental GD value:"
+start_time = time.time()
+print compute_incr_gd(inArray, refSet)
+print "It took:", time.time()- start_time, "seconds to compute incremental gd."
+
+print "IGD value:"
+start_time = time.time()
+print compute_igd(inArray, refSet)
+print "It took:", time.time()- start_time, "seconds to compute igd."
+
+print "Incremental IGD value:"
+start_time = time.time()
+print compute_incr_igd(inArray, refSet)
+print "It took:", time.time()- start_time, "seconds to compute incremental igd."

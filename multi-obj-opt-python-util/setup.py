@@ -27,6 +27,8 @@ print "Compiling libs"
 system("gcc" + LDFLAGS + " src/pf.c -o python_mo_util/libpf.so")
 system("gcc" + LDFLAGS + " src/eps.c -o python_mo_util/libeps.so")
 system("gcc" + LDFLAGS + " src/hypervol.c -o python_mo_util/libhv.so")
+system("gcc" + LDFLAGS + " src/igd.c -o python_mo_util/libgd.so")
+
 
 print "Testing .."
 os.chdir("./python_mo_util/")

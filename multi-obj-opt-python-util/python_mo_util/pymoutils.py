@@ -27,10 +27,12 @@ if platform == "darwin":
 	libeps = npct.load_library("libeps", ".")
 	libpf  = npct.load_library("libpf",".")
 	libhv  = npct.load_library("libhv",".")
+	libgd  = npct.load_library("libgd",".")
 else:
 	libeps = npct.load_library("libeps.so", ".") 
 	libpf  = npct.load_library("libpf.so",".")
 	libhv  = npct.load_library("libhv.so",".")
+	libgd  = npct.load_library("libgd.so",".")
 ##########################################################################	
 # define the arg and res type for each of the functions:
 # 1. epsilon library
@@ -46,10 +48,17 @@ libpf.pf_selective.argtypes = [array_1d_bool, array_1d_double, c_int, c_int]
 libpf.pf_cao.restype = None
 libpf.pf_cao.argtypes = [array_1d_bool, array_1d_double, c_int, c_int]
 # 3. hv library
-#libhv.incr_hv.restype = None
-#libhv.incr_hv.argtypes = [array_1d_double,array_1d_double, array_1d_double, c_int, c_int]
 libhv.incr_hv.restype = None
 libhv.incr_hv.argtypes = [array_1d_double, array_1d_double, c_int, c_int]
+# 4. GD library (GD,IGD)
+libgd.gd.restype = c_double
+libgd.gd.argtypes = [array_1d_double, array_1d_double, c_int, c_int, c_int]
+libgd.igd.restype = c_double
+libgd.igd.argtypes = [array_1d_double, array_1d_double, c_int, c_int, c_int]
+libgd.incr_gd.restype = None
+libgd.incr_gd.argtypes = [array_1d_double,array_1d_double, array_1d_double, c_int, c_int, c_int]
+libgd.incr_igd.restype = None
+libgd.incr_igd.argtypes = [array_1d_double,array_1d_double, array_1d_double, c_int, c_int, c_int]
 ##########################################################################
 # Python wrappers:
 def compute_pyhv(approximation_set, reference_point):
@@ -84,6 +93,42 @@ def compute_incr_hv(approximation_set, reference_point):
 		incr_hv_val[i]= compute_pyhv(approximation_set[:i+1], reference_point)
 	return incr_hv_val
 		
+def compute_gd(approximation_set, reference_set):
+	"""
+		returns the generational distance indicator value of the approximation set with respect to the reference set
+	"""
+	#assert approximation_set.shape[1] == reference_set.shape[1]
+	return libgd.gd(approximation_set, reference_set, approximation_set.shape[0], reference_set.shape[0], approximation_set.shape[1])
+
+
+def compute_incr_gd(approximation_set, reference_set):
+	"""
+		returns a vector of the generational distance indicator values for incremental subsets of the approximation set with respect to the reference set.
+		i.e. incr_gd[m] = gd(approximation_set[:m+1,:], reference_set)
+	"""
+	#assert approximation_set.shape[1] == reference_set.shape[1]
+	incr_gd = np.array([0.0]* approximation_set.shape[0])
+	libgd.incr_gd(incr_gd, np.ascontiguousarray(approximation_set), np.ascontiguousarray(reference_set), approximation_set.shape[0], reference_set.shape[0], approximation_set.shape[1])
+	return incr_gd
+
+def compute_igd(approximation_set, reference_set):
+	"""
+		returns the inverted generational distance indicator value of the approximation set with respect to the reference set
+	"""
+	#assert approximation_set.shape[1] == reference_set.shape[1]
+	return libgd.igd(approximation_set, reference_set, approximation_set.shape[0], reference_set.shape[0], approximation_set.shape[1])
+
+
+def compute_incr_igd(approximation_set, reference_set):
+	"""
+		returns a vector of the inverted generational distance indicator values for incremental subsets of the approximation set with respect to the reference set.
+		i.e. incr_igd[m] = igd(approximation_set[:m+1,:], reference_set)
+	"""
+	#assert approximation_set.shape[1] == reference_set.shape[1]
+	incr_igd = np.array([0.0]* approximation_set.shape[0])
+	libgd.incr_igd(incr_igd, np.ascontiguousarray(approximation_set), np.ascontiguousarray(reference_set), approximation_set.shape[0], reference_set.shape[0], approximation_set.shape[1])
+	return incr_igd
+
 	
 def compute_eps(approximation_set, reference_set):
 	"""
