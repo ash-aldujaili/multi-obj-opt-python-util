@@ -3,9 +3,8 @@ A collection of handy functions for multi-objective optimization written in C wi
 
 Currently it has the current utilities:
 
-* paretfront.py : processes a set of vectors and returns a logical vector indicating which vectors are non-dominated.
-
-* epsilonindicator.py: processes a set of vectors (approximation set) with respect to a reference set and returns the additive epsilon indicator value of the entire set as well as a the incremental epsilon indicatior values over the elements of the approximation set.
+* identifying the Pareto front (non-dominated solutions) among a set of solutions.
+* computing quality indicators such as hypervolume, inverted generational distance, generational distance, and additive epsilon indicator.
 
 # Setup: 
 
